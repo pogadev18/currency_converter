@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import axios from 'axios';
 
 const FIXER_API_KEY = '0f8e76540ca5e2ffb04ae7053c2af3f9';
@@ -6,6 +7,8 @@ const FIXER_API = `http://data.fixer.io/api/latest?access_key=${FIXER_API_KEY}`;
 const REST_COUNTRIES_API = `https://restcountries.eu/rest/v2/currency`;
 
 export const useCurrencyConverter = () => {
+  const [error, setError] = useState('');
+
   // fetch currencies data
   const getExchangeRate = async (fromCurrency, toCurrency) => {
     try {
@@ -18,9 +21,11 @@ export const useCurrencyConverter = () => {
 
       return exchangeRate;
     } catch (error) {
-      throw new Error(
-        `Unable to get currency ${fromCurrency} and ${toCurrency}`
+      setError(
+        error.error ||
+          'Something went wrong, please try again! Make sure the currency CODE is correct! See the list below!'
       );
+      throw error;
     }
   };
 
@@ -30,7 +35,11 @@ export const useCurrencyConverter = () => {
       const { data } = await axios.get(`${REST_COUNTRIES_API}/${currencyCode}`);
       return data.map(({ name }) => name);
     } catch (error) {
-      throw new Error(`Unable to get countries that use ${currencyCode}`);
+      setError(
+        error.error ||
+          'Something went wrong, please try again! Make sure the currency CODE is correct! See the list below!'
+      );
+      throw error;
     }
   };
 
@@ -49,5 +58,5 @@ export const useCurrencyConverter = () => {
     return `${amount} ${fromCurrency} is worth ${convertedAmmount} ${toCurrency}. You cand spend these in the following countries: ${countries}`;
   };
 
-  return { convertCurrency };
+  return { convertCurrency, error };
 };

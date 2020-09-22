@@ -7,8 +7,7 @@ import { useCurrencyConverter } from '../hook/currencyConverter-hook';
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [result, setFinalResult] = useState('');
-  const [error, setError] = useState('');
-  const { convertCurrency } = useCurrencyConverter();
+  const { convertCurrency, error } = useCurrencyConverter();
 
   const handleOnChange = e => {
     dispatch({
@@ -22,9 +21,14 @@ function App() {
 
   const handleSubmit = e => {
     e.preventDefault();
-    convertCurrency(fromCurrency, toCurrency, amount)
-      .then(result => setFinalResult(result))
-      .catch(error => setError(error));
+
+    if (fromCurrency && toCurrency && amount) {
+      convertCurrency(fromCurrency, toCurrency, amount)
+        .then(result => setFinalResult(result))
+        .catch(error => console.log(error));
+    } else {
+      alert('All fields are mandatory!');
+    }
   };
 
   return (
@@ -39,6 +43,7 @@ function App() {
             name='amount'
             id='amount'
             type='number'
+            required
           />
         </div>
 
