@@ -3,6 +3,9 @@
 
 ![Currency Converter](https://imgur.com/3EjpdWi.png)
 
+### A few notes about the project
+My main goal with this small but practical app was to expand my knowledge when it comes to promises, ```async``` functions and the ```await``` keyword in JavaScript. I've also practiced a lot of destructuring values from API's data. Feel free to clone this repo and get your hands dirty with the code. And of course, if you have any questions, I'm here for you! :smiley:
+
 ### APIs used for this project:
 * https://fixer.io/
 * https://restcountries.eu/
