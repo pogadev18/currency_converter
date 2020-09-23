@@ -23,7 +23,7 @@ export const useCurrencyConverter = () => {
     } catch (error) {
       setError(
         error.error ||
-          'Something went wrong, please try again! Make sure the currency CODE is correct! See the list below!'
+          'Something went wrong, please try again! Make sure the currency CODE is correct! Please check the list with all the codes.'
       );
       throw error;
     }
