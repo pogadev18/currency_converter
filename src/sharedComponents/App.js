@@ -1,12 +1,16 @@
 import React, { useState, useReducer } from 'react';
+import LocalAtmIcon from '@material-ui/icons/LocalAtm';
 
-import { CURRENCY_CODES } from '../constants/currencyCodes';
 import { reducer, initialState } from '../reducer/reducer';
 import { useCurrencyConverter } from '../hook/currencyConverter-hook';
+import CurrencyCodes from './CurrencyCodes';
+
+import './App.scss';
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [result, setFinalResult] = useState('');
+  const [isVisible, setIsVisible] = useState(false);
   const { convertCurrency, error } = useCurrencyConverter();
 
   const handleOnChange = e => {
@@ -22,8 +26,12 @@ function App() {
   const handleSubmit = e => {
     e.preventDefault();
 
+    // regex to 'clean' the string of white spaces and symbols
+    const cleanFromCurrency = fromCurrency.replace(/[^\w]/g, '');
+    const cleanToCurrency = toCurrency.replace(/[^\w]/g, '');
+
     if (fromCurrency && toCurrency && amount) {
-      convertCurrency(fromCurrency, toCurrency, amount)
+      convertCurrency(cleanFromCurrency, cleanToCurrency, amount)
         .then(result => setFinalResult(result))
         .catch(error => console.log(error));
     } else {
@@ -34,8 +42,17 @@ function App() {
   return (
     <div className='currencyConverter'>
       <h1>Currency Converter</h1>
-      <form>
-        <div className='currencyConverter__amount'>
+      <p
+        className='currencyConverter__toggleCodes'
+        onClick={() => setIsVisible(!isVisible)}
+      >
+        <LocalAtmIcon className='currencyConverter__atmIcon' />
+        {isVisible ? 'Hide' : 'Show'} currency codes!
+      </p>
+      {isVisible && <CurrencyCodes />}
+
+      <form className='currencyConverter__form'>
+        <div className='currencyConverter__inputGroup'>
           <label htmlFor='amount'>Amount</label>
           <input
             value={amount}
@@ -43,11 +60,11 @@ function App() {
             name='amount'
             id='amount'
             type='number'
-            required
+            placeholder='450'
           />
         </div>
 
-        <div className='currencyConverter__from'>
+        <div className='currencyConverter__inputGroup'>
           <label htmlFor='fromCurrency'>From</label>
           <input
             type='text'
@@ -55,10 +72,11 @@ function App() {
             id='fromCurrency'
             value={fromCurrency}
             onChange={handleOnChange}
+            placeholder='USD'
           />
         </div>
 
-        <div className='currencyConverter__to'>
+        <div className='currencyConverter__inputGroup'>
           <label htmlFor='toCurrency'>To</label>
           <input
             type='text'
@@ -66,6 +84,7 @@ function App() {
             id='toCurrency'
             value={toCurrency}
             onChange={handleOnChange}
+            placeholder='EUR'
           />
         </div>
 
@@ -73,8 +92,11 @@ function App() {
           CONVERT
         </button>
       </form>
-      <h3>{result}</h3>
-      <h3>{error}</h3>
+
+      <div className='currencyConverter__result'>
+        {result}
+        {error && <p className='currencyConverter__errorMessage'>{error}</p>}
+      </div>
     </div>
   );
 }

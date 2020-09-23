@@ -37,7 +37,7 @@ export const useCurrencyConverter = () => {
     } catch (error) {
       setError(
         error.error ||
-          'Something went wrong, please try again! Make sure the currency CODE is correct! See the list below!'
+          'Something went wrong, please try again! Make sure the currency CODE is correct! Please check the list with all the codes.'
       );
       throw error;
     }
@@ -55,7 +55,15 @@ export const useCurrencyConverter = () => {
 
     const convertedAmmount = (amount * exchangeRate).toFixed(2);
 
-    return `${amount} ${fromCurrency} is worth ${convertedAmmount} ${toCurrency}. You cand spend these in the following countries: ${countries}`;
+    const markup = `
+        <p class="currencyConverter__valueResult">${amount} ${fromCurrency} is worth ${convertedAmmount} ${toCurrency}.</p>
+        <p class="currencyConverter__countriesText">You can spend these in the following countries:</p>
+        <div>${countries.join(', ')}</div>
+    `;
+
+    return (document.querySelector(
+      '.currencyConverter__result'
+    ).innerHTML = markup);
   };
 
   return { convertCurrency, error };
